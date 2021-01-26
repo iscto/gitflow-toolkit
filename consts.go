@@ -15,7 +15,6 @@ const commitWarn = "✔ Always code as if the guy who ends up maintaining your c
 
 const commitMessagePattern = `^(feature|bugfix|doc|test|refactor|clean):{1}(\s.*)`
 //const commitMessagePattern = `^(feat|fix|docs|style|refactor|test|chore|perf|hotfix)\((\S.*)\):\s(\S.*)|^Merge.*`
-
 const commitBodyEditPattern = `^\/\/\s*(?i)edit`
 
 const commitMessageTpl = `{{.Type}}: {{.Title}}
@@ -34,7 +33,6 @@ const commitMessageTpl = `{{.Type}}: {{.Title}}
 //
 //{{ .Sob }}
 //`
-
 const commitMessageCheckFailedTpl = `
 ########################################################
 ##                                                    ##
