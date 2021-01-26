@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -78,9 +79,15 @@ func commitMessageCheck(f string) error {
 	if err != nil {
 		return err
 	}
+	commitMsg := string(bs)
+	fmt.Printf(commitMsg)
 
-	msgs := reg.FindStringSubmatch(string(bs))
-	if len(msgs) != 4 {
+	msgs := reg.FindStringSubmatch(commitMsg)
+	i := len(msgs)
+	strings :=strconv.Itoa(i)
+	fmt.Printf(strings)
+
+	if i != 3 {
 		return fmt.Errorf(commitMessageCheckFailedTpl)
 	}
 
@@ -105,10 +112,10 @@ func commit() error {
 	if err != nil {
 		return err
 	}
-	cmScope, err := commitScope()
-	if err != nil {
-		return err
-	}
+	//cmScope, err := commitScope()
+	//if err != nil {
+	//	return err
+	//}
 	cmSubject, err := commitSubject()
 	if err != nil {
 		return err
@@ -128,7 +135,7 @@ func commit() error {
 
 	msg := CommitMessage{
 		Type:    cmType.Type,
-		Scope:   cmScope,
+		//Scope:   cmScope,
 		Subject: cmSubject,
 		Body:    cmBody,
 		Footer:  cmFooter,
@@ -166,15 +173,16 @@ func commit() error {
 func commitType() (MessageType, error) {
 	m := &selector.Model{
 		Data: []interface{}{
-			MessageType{Type: FEAT, ZHDescription: "新功能", ENDescription: "Introducing new features"},
+			MessageType{Type: FEAT, ZHDescription: "实现 Task 功能", ENDescription: "Introducing new features"},
 			MessageType{Type: FIX, ZHDescription: "修复 Bug", ENDescription: "Bug fix"},
-			MessageType{Type: DOCS, ZHDescription: "添加文档", ENDescription: "Writing docs"},
-			MessageType{Type: STYLE, ZHDescription: "调整格式", ENDescription: "Improving structure/format of the code"},
+			MessageType{Type: DOCS, ZHDescription: "补充注释和文档", ENDescription: "Writing docs"},
+			//MessageType{Type: STYLE, ZHDescription: "调整格式", ENDescription: "Improving structure/format of the code"},
+			MessageType{Type: TEST, ZHDescription: "增加测试代码", ENDescription: "When adding missing tests"},
 			MessageType{Type: REFACTOR, ZHDescription: "重构代码", ENDescription: "Refactoring code"},
-			MessageType{Type: TEST, ZHDescription: "增加测试", ENDescription: "When adding missing tests"},
-			MessageType{Type: CHORE, ZHDescription: "CI/CD 变动", ENDescription: "Changing CI/CD"},
-			MessageType{Type: PERF, ZHDescription: "性能优化", ENDescription: "Improving performance"},
-			MessageType{Type: HOTFIX, ZHDescription: "紧急修复", ENDescription: "Bug fix urgently"},
+			MessageType{Type: CLEAN, ZHDescription: "重构代码", ENDescription: "Refactoring code"},
+			//MessageType{Type: CHORE, ZHDescription: "CI/CD 变动", ENDescription: "Changing CI/CD"},
+			//MessageType{Type: PERF, ZHDescription: "性能优化", ENDescription: "Improving performance"},
+			//MessageType{Type: HOTFIX, ZHDescription: "紧急修复", ENDescription: "Bug fix urgently"},
 		},
 		PerPage: 6,
 		// Use the arrow keys to navigate: ↓ ↑ → ←

@@ -3,24 +3,22 @@ package main
 type CommitType string
 
 const (
-	FEAT     CommitType = "feat"
-	FIX      CommitType = "fix"
-	DOCS     CommitType = "docs"
-	STYLE    CommitType = "style"
-	REFACTOR CommitType = "refactor"
+	FEAT     CommitType = "feature"
+	FIX      CommitType = "bugfix"
+	DOCS     CommitType = "doc"
 	TEST     CommitType = "test"
-	CHORE    CommitType = "chore"
-	PERF     CommitType = "perf"
-	HOTFIX   CommitType = "hotfix"
+	REFACTOR CommitType = "refactor"
+	CLEAN 	 CommitType = "clean"
 )
 
 const commitWarn = "✔ Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live."
 
-const commitMessagePattern = `^(feat|fix|docs|style|refactor|test|chore|perf|hotfix)\((\S.*)\):\s(\S.*)|^Merge.*`
+const commitMessagePattern = `^(feature|bugfix|doc|test|refactor|clean):{1}(\s.*)`
+//const commitMessagePattern = `^(feat|fix|docs|style|refactor|test|chore|perf|hotfix)\((\S.*)\):\s(\S.*)|^Merge.*`
 
 const commitBodyEditPattern = `^\/\/\s*(?i)edit`
 
-const commitMessageTpl = `{{ .Type }}({{ .Scope }}): {{ .Subject }}
+const commitMessageTpl = `{{.Type}}: {{.Subject}}
 
 {{ .Body }}
 
@@ -28,14 +26,21 @@ const commitMessageTpl = `{{ .Type }}({{ .Scope }}): {{ .Subject }}
 
 {{ .Sob }}
 `
+//const commitMessageTpl = `{{ .Type }}({{ .Scope }}): {{ .Subject }}
+//
+//{{ .Body }}
+//
+//{{ .Footer }}
+//
+//{{ .Sob }}
+//`
 
 const commitMessageCheckFailedTpl = `
-######################################################
-##                                                  ##
-##    💔 The commit message is not standardized.    ##
-##    💔 It must match the regular expression:      ##
-##                                                  ##
-##    ^(feat|fix|docs|style|refactor|test|chore|    ##
-##     perf|hotfix)\((\S.*)\):\s(\S.*)|^Merge.*     ##
-##                                                  ##
-######################################################`
+########################################################
+##                                                    ##
+##    💔 The commit message is not standardized.      ##
+##    💔 It must match the regular expression:        ##
+##                                                    ##
+## ^(feature|bugfix|doc|test|refactor|clean):{1}(\s.*)##
+##                                                    ##
+########################################################`
