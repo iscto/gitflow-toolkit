@@ -188,10 +188,9 @@ func commitType() (MessageType, error) {
 
 		//HeaderFunc: selector.DefaultHeaderFuncWithAppend("Select Commit Type:"),
 		HeaderFunc: func(m selector.Model, obj interface{}, gdIndex int) string {
-			t := m.PageSelected().(MessageType)
-			footerTpl := `Use the arrow keys to navigate: ↓ ↑ → ←
+			headerTpl := `Use the arrow keys to navigate: ↓ ↑ → ←
 Select Commit Type:`
-			return common.FontColor(fmt.Sprintf(footerTpl, t.Type, t.ZHDescription, t.ENDescription), "222")
+			return common.FontColor(fmt.Sprintf(headerTpl), "222")
 		},
 		// [1] feat (Introducing new features)
 		SelectedFunc: func(m selector.Model, obj interface{}, gdIndex int) string {
