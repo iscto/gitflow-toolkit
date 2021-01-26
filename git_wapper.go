@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"regexp"
-	"strconv"
 	"strings"
 	"text/template"
 
@@ -79,15 +78,14 @@ func commitMessageCheck(f string) error {
 	if err != nil {
 		return err
 	}
-	commitMsg := string(bs)
-	fmt.Printf(commitMsg)
+	//commitMsg := string(bs)
+	//fmt.Printf(commitMsg)
+	commitMsg := reg.FindStringSubmatch(string(bs))
+	//i := len(commitMsg)
+	//strings :=strconv.Itoa(i)
+	//fmt.Printf(strings)
 
-	msgs := reg.FindStringSubmatch(commitMsg)
-	i := len(msgs)
-	strings :=strconv.Itoa(i)
-	fmt.Printf(strings)
-
-	if i != 3 {
+	if len(commitMsg) != 3 {
 		return fmt.Errorf(commitMessageCheckFailedTpl)
 	}
 
