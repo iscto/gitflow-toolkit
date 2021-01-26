@@ -25,12 +25,12 @@ type MessageType struct {
 }
 
 type CommitMessage struct {
-	Type    CommitType
-	Scope   string
-	Subject string
-	Body    string
-	Footer  string
-	Sob     string
+	Type   CommitType
+	Scope  string
+	Title  string
+	Body   string
+	Footer string
+	Sob    string
 }
 
 func createBranch(name string) error {
@@ -114,7 +114,7 @@ func commit() error {
 	//if err != nil {
 	//	return err
 	//}
-	cmSubject, err := commitSubject()
+	cmTitle, err := commitSubject()
 	if err != nil {
 		return err
 	}
@@ -134,13 +134,13 @@ func commit() error {
 	msg := CommitMessage{
 		Type:    cmType.Type,
 		//Scope:   cmScope,
-		Subject: cmSubject,
-		Body:    cmBody,
-		Footer:  cmFooter,
-		Sob:     cmSOB,
+		Title:  cmTitle,
+		Body:   cmBody,
+		Footer: cmFooter,
+		Sob:    cmSOB,
 	}
 	if msg.Body == "" {
-		msg.Body = cmSubject
+		msg.Body = cmTitle
 	}
 
 	f, err := ioutil.TempFile("", "git-commit")
@@ -185,16 +185,23 @@ func commitType() (MessageType, error) {
 		PerPage: 6,
 		// Use the arrow keys to navigate: ↓ ↑ → ←
 		// Select Commit Type:
-		HeaderFunc: selector.DefaultHeaderFuncWithAppend("Select Commit Type:"),
+
+		//HeaderFunc: selector.DefaultHeaderFuncWithAppend("Select Commit Type:"),
+		HeaderFunc: func(m selector.Model, obj interface{}, gdIndex int) string {
+			t := m.PageSelected().(MessageType)
+			footerTpl := `Use the arrow keys to navigate: ↓ ↑ → ←
+Select Commit Type:`
+			return common.FontColor(fmt.Sprintf(footerTpl, t.Type, t.ZHDescription, t.ENDescription), "222")
+		},
 		// [1] feat (Introducing new features)
 		SelectedFunc: func(m selector.Model, obj interface{}, gdIndex int) string {
 			t := obj.(MessageType)
-			return common.FontColor(fmt.Sprintf("[%d] %s (%s)", gdIndex+1, t.Type, t.ENDescription), selector.ColorSelected)
+			return common.FontColor(fmt.Sprintf("[%d] %s (%s)", gdIndex+1, t.Type, t.ZHDescription), "220")
 		},
 		// 2. fix (Bug fix)
 		UnSelectedFunc: func(m selector.Model, obj interface{}, gdIndex int) string {
 			t := obj.(MessageType)
-			return common.FontColor(fmt.Sprintf(" %d. %s (%s)", gdIndex+1, t.Type, t.ENDescription), selector.ColorUnSelected)
+			return common.FontColor(fmt.Sprintf(" %d. %s (%s)", gdIndex+1, t.Type, t.ZHDescription), "14")
 		},
 		// --------- Commit Type ----------
 		// Type: feat
@@ -204,7 +211,7 @@ func commitType() (MessageType, error) {
 			footerTpl := `--------- Commit Type ----------
 Type: %s
 Description: %s(%s)`
-			return common.FontColor(fmt.Sprintf(footerTpl, t.Type, t.ZHDescription, t.ENDescription), selector.ColorFooter)
+			return common.FontColor(fmt.Sprintf(footerTpl, t.Type, t.ZHDescription, t.ENDescription), "222")
 		},
 		FinishedFunc: func(s interface{}) string {
 			mt := s.(MessageType)
@@ -243,7 +250,7 @@ func commitScope() (string, error) {
 
 func commitSubject() (string, error) {
 	m := &prompt.Model{
-		Prompt:       common.FontColor("Subject: ", "2"),
+		Prompt:       common.FontColor("Title: ", "2"),
 		ValidateFunc: prompt.VFNotBlank,
 	}
 	p := tea.NewProgram(m)

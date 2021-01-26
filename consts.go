@@ -18,7 +18,7 @@ const commitMessagePattern = `^(feature|bugfix|doc|test|refactor|clean):{1}(\s.*
 
 const commitBodyEditPattern = `^\/\/\s*(?i)edit`
 
-const commitMessageTpl = `{{.Type}}: {{.Subject}}
+const commitMessageTpl = `{{.Type}}: {{.Title}}
 
 {{ .Body }}
 
@@ -26,7 +26,7 @@ const commitMessageTpl = `{{.Type}}: {{.Subject}}
 
 {{ .Sob }}
 `
-//const commitMessageTpl = `{{ .Type }}({{ .Scope }}): {{ .Subject }}
+//const commitMessageTpl = `{{ .Type }}({{ .Scope }}): {{ .Title }}
 //
 //{{ .Body }}
 //
