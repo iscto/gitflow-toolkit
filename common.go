@@ -101,3 +101,23 @@ func gitCommand(out io.Writer, cmds []string) error {
 
 	return cmd.Run()
 }
+
+func testSend(out io.Writer, cmds []string) error {
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("git.exe", cmds...)
+	case "linux", "darwin":
+		cmd = exec.Command("git", cmds...)
+	default:
+		return fmt.Errorf("unsupported platform")
+	}
+
+	cmd.Stdin = os.Stdin
+	if out != nil {
+		cmd.Stdout = out
+		cmd.Stderr = out
+	}
+
+	return cmd.Run()
+}

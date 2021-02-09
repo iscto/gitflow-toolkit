@@ -168,6 +168,55 @@ func commit() error {
 	return nil
 }
 
+func send() error {
+
+	cmTitle, err := sendTitle()
+	if err != nil {
+		return err
+	}
+	cmBody, err := sendBody()
+	if err != nil {
+		return err
+	}
+	cmSOB, err := creator()
+	if err != nil {
+		return err
+	}
+
+	msg := CommitMessage{
+		Title:  cmTitle,
+		Body:   cmBody,
+		Sob:    cmSOB,
+	}
+	if msg.Body == "" {
+		msg.Body = cmTitle
+	}
+
+	f, err := ioutil.TempFile("", "git-commit")
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_ = f.Close()
+		_ = os.Remove(f.Name())
+	}()
+
+	tpl, _ := template.New("").Parse(sendMessageTpl)
+	err = tpl.Execute(f, msg)
+	if err != nil {
+		return err
+	}
+
+	err = gitCommand(os.Stdout, []string{"commit", "-F", f.Name()})
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("\n" + common.FontColor(commitWarn, "2"))
+
+	return nil
+}
+
 func commitType() (MessageType, error) {
 	m := &selector.Model{
 		Data: []interface{}{
@@ -247,6 +296,22 @@ func commitScope() (string, error) {
 	return m.Value(), nil
 }
 
+func sendTitle() (string, error) {
+	m := &prompt.Model{
+		Prompt:       common.FontColor("Title: ", "2"),
+		ValidateFunc: prompt.VFNotBlank,
+	}
+	p := tea.NewProgram(m)
+	err := p.Start()
+	if err != nil {
+		return "", err
+	}
+	if m.Canceled() {
+		return "", fmt.Errorf("user has cancelled this commit")
+	}
+	return m.Value(), nil
+}
+
 func commitSubject() (string, error) {
 	m := &prompt.Model{
 		Prompt:       common.FontColor("Title: ", "2"),
@@ -264,6 +329,27 @@ func commitSubject() (string, error) {
 }
 
 func commitBody() (string, error) {
+	m := &prompt.Model{
+		Prompt: common.FontColor("Body: ", "2"),
+	}
+	p := tea.NewProgram(m)
+	err := p.Start()
+	if err != nil {
+		return "", err
+	}
+	value := m.Value()
+	if m.Canceled() {
+		return "", fmt.Errorf("user has cancelled this commit")
+	}
+
+	reg := regexp.MustCompile(commitBodyEditPattern)
+	if reg.MatchString(value) {
+		return openEditor()
+	}
+	return m.Value(), nil
+}
+
+func sendBody() (string, error) {
 	m := &prompt.Model{
 		Prompt: common.FontColor("Body: ", "2"),
 	}
@@ -305,6 +391,14 @@ func createSOB() (string, error) {
 		return "", err
 	}
 	return fmt.Sprintf("Signed-off-by: %s %s", name, email), nil
+}
+
+func creator() (string, error) {
+	name, _, err := gitAuthor()
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("发布人 %s ", name), nil
 }
 
 func gitAuthor() (string, string, error) {

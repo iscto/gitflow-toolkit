@@ -24,7 +24,14 @@ const commitMessageTpl = `{{.Type}}: {{.Title}}
 {{ .Footer }}
 
 {{ .Sob }}
+
 `
+
+const sendMessageTpl = `{{.Title}}
+{{ .Body }}
+{{ .Sob }}
+`
+
 //const commitMessageTpl = `{{ .Type }}({{ .Scope }}): {{ .Title }}
 //
 //{{ .Body }}

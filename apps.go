@@ -78,6 +78,24 @@ func commitApp() *cli.App {
 	}
 }
 
+func sendApp() *cli.App {
+	return &cli.App{
+		Name:                 "git-send",
+		Usage:                "Interactive send FeiShu",
+		UsageText:            "git send",
+		Version:              fmt.Sprintf("%s %s %s", version, buildDate, commitID),
+		Authors:              []*cli.Author{{Name: "mritd", Email: "mritd@linux.com"}},
+		Copyright:            "Copyright (c) 2020 mritd, All rights reserved.",
+		EnableBashCompletion: true,
+		Action: func(c *cli.Context) error {
+			if c.NArg() != 0 {
+				return cli.ShowAppHelp(c)
+			}
+			return send()
+		},
+	}
+}
+
 func checkMessageApp() *cli.App {
 	return &cli.App{
 		Name:                 "commit-msg",
