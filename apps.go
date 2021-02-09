@@ -36,6 +36,9 @@ var subApps = []*cli.App{
 	commitApp(),
 	checkMessageApp(),
 	pushApp(),
+
+	sendApp(),
+
 }
 
 func newBranchApp(ct CommitType) *cli.App {
@@ -80,9 +83,9 @@ func commitApp() *cli.App {
 
 func sendApp() *cli.App {
 	return &cli.App{
-		Name:                 "git-send",
+		Name:                 "fsend",
 		Usage:                "Interactive send FeiShu",
-		UsageText:            "git send",
+		UsageText:            "fsend",
 		Version:              fmt.Sprintf("%s %s %s", version, buildDate, commitID),
 		Authors:              []*cli.Author{{Name: "mritd", Email: "mritd@linux.com"}},
 		Copyright:            "Copyright (c) 2020 mritd, All rights reserved.",

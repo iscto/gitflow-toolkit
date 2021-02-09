@@ -192,7 +192,7 @@ func send() error {
 		msg.Body = cmTitle
 	}
 
-	f, err := ioutil.TempFile("", "git-commit")
+	f, err := ioutil.TempFile("", "send")
 	if err != nil {
 		return err
 	}
@@ -207,12 +207,12 @@ func send() error {
 		return err
 	}
 
-	err = gitCommand(os.Stdout, []string{"commit", "-F", f.Name()})
-	if err != nil {
-		return err
-	}
+	//err = gitCommand(os.Stdout, []string{"commit", "-F", f.Name()})
+	//if err != nil {
+	//	return err
+	//}
 
-	fmt.Println("\n" + common.FontColor(commitWarn, "2"))
+	fmt.Println("\n" + common.FontColor(f.Name(), "2"))
 
 	return nil
 }
