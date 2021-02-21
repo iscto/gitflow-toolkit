@@ -11,7 +11,7 @@ const (
 	CLEAN 	 CommitType = "clean"
 )
 
-const commitWarn = "✔ Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live."
+const commitWarn = "✔ Follow the arc diff at https://phab.gotokeep.com ask others to help you Accept Revision."
 
 const commitMessagePattern = `^(feature|bugfix|doc|test|refactor|clean):{1}(\s.*)`
 //const commitMessagePattern = `^(feat|fix|docs|style|refactor|test|chore|perf|hotfix)\((\S.*)\):\s(\S.*)|^Merge.*`

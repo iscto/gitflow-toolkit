@@ -168,55 +168,6 @@ func commit() error {
 	return nil
 }
 
-func send() error {
-
-	cmTitle, err := sendTitle()
-	if err != nil {
-		return err
-	}
-	cmBody, err := sendBody()
-	if err != nil {
-		return err
-	}
-	cmSOB, err := creator()
-	if err != nil {
-		return err
-	}
-
-	msg := CommitMessage{
-		Title:  cmTitle,
-		Body:   cmBody,
-		Sob:    cmSOB,
-	}
-	if msg.Body == "" {
-		msg.Body = cmTitle
-	}
-
-	f, err := ioutil.TempFile("", "send")
-	if err != nil {
-		return err
-	}
-	defer func() {
-		_ = f.Close()
-		_ = os.Remove(f.Name())
-	}()
-
-	tpl, _ := template.New("").Parse(sendMessageTpl)
-	err = tpl.Execute(f, msg)
-	if err != nil {
-		return err
-	}
-
-	//err = gitCommand(os.Stdout, []string{"commit", "-F", f.Name()})
-	//if err != nil {
-	//	return err
-	//}
-
-	fmt.Println("\n" + common.FontColor(f.Name(), "2"))
-
-	return nil
-}
-
 func commitType() (MessageType, error) {
 	m := &selector.Model{
 		Data: []interface{}{
@@ -226,7 +177,7 @@ func commitType() (MessageType, error) {
 			//MessageType{Type: STYLE, ZHDescription: "调整格式", ENDescription: "Improving structure/format of the code"},
 			MessageType{Type: TEST, ZHDescription: "增加测试代码", ENDescription: "When adding missing tests"},
 			MessageType{Type: REFACTOR, ZHDescription: "重构代码", ENDescription: "Refactoring code"},
-			MessageType{Type: CLEAN, ZHDescription: "重构代码", ENDescription: "Refactoring code"},
+			MessageType{Type: CLEAN, ZHDescription: "格式、删除无用代码", ENDescription: "Clean code "},
 			//MessageType{Type: CHORE, ZHDescription: "CI/CD 变动", ENDescription: "Changing CI/CD"},
 			//MessageType{Type: PERF, ZHDescription: "性能优化", ENDescription: "Improving performance"},
 			//MessageType{Type: HOTFIX, ZHDescription: "紧急修复", ENDescription: "Bug fix urgently"},
